@@ -146,6 +146,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Dingo\Api\Provider\LaravelServiceProvider::class,
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+        Silber\Bouncer\BouncerServiceProvider::class,
 
     ],
 
@@ -196,6 +197,7 @@ return [
         'View'      => Illuminate\Support\Facades\View::class,
         'JWTAuth'   => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
+        'Bouncer' => Silber\Bouncer\BouncerFacade::class,
 
     ],
 
