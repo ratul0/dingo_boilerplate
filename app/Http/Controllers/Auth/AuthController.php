@@ -2,64 +2,33 @@
 
 namespace App\Http\Controllers\Auth;
 
+
+use App\Http\Controllers\BaseController;
 use App\User;
+use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Validator;
-use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
-class AuthController extends Controller
+class AuthController extends BaseController
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Registration & Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users, as well as the
-    | authentication of existing users. By default, this controller uses
-    | a simple trait to add these behaviors. Why don't you explore it?
-    |
-    */
-
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
-
-    /**
-     * Create a new authentication controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    private $request;
+    public function __construct(Request $request)
     {
-        $this->middleware('guest', ['except' => 'getLogout']);
+        $this->request = $request;
     }
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|confirmed|min:6',
-        ]);
-    }
+    public function login(){
+        $credentials = $this->request->only('email','password');
+        try {
+            // attempt to verify the credentials and create a token for the user
+            if (! $token = JWTAuth::attempt($credentials)) {
+                return $this->response->errorUnauthorized();
+            }
+        } catch (JWTException $e) {
+            // something went wrong whilst attempting to encode the token
+            return $this->response->errorInternal();
+        }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return User
-     */
-    protected function create(array $data)
-    {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
-    }
+        // all good so return the token
+        return $this->response->array(compact('token'))->setStatusCode(200);    }
 }
