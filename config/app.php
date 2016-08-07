@@ -147,6 +147,8 @@ return [
         Dingo\Api\Provider\LaravelServiceProvider::class,
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Silber\Bouncer\BouncerServiceProvider::class,
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        Barryvdh\Cors\ServiceProvider::class,
 
     ],
 
